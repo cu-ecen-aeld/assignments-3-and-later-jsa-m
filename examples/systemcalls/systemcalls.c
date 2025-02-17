@@ -124,6 +124,7 @@ bool do_exec(int count, ...)
             return false;
         }
     }
+    return false;
 }
 
 /**
@@ -203,5 +204,6 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
             return false; // Command failed
         }
     }
+    return false;
 }
 
