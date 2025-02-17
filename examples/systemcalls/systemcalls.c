@@ -20,32 +20,14 @@ bool do_system(const char *cmd)
 
     sys_return = system(cmd);
 
-    if (sys_return == -1)
+    if (sys_return)
     {
         // system() failed to invoke the shell
         return false;
     }
 
-    // Exit status of a child process in Linux, The parent can use the system call
-    // wait() or waitpid() along with the macros WIFEXITED and WEXITSTATUS
-    // with it to learn about the status of its stopped child.
-
-    if (WIFEXITED(sys_return))
-    {
-        int exit_status;
-        exit_status = WEXITSTATUS(sys_return);
-        if (exit_status == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     // Otherwise command terminated by a signal, return false
-    return false;
+    return true;
 }
 
 /**
@@ -111,15 +93,6 @@ bool do_exec(int count, ...)
         if (waitpid(pid, &status, 0) == -1)
         {
             // waitpid failed
-            return false;
-        }
-
-        if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-        {
-            return true;
-        }
-        else
-        {
             return false;
         }
     }
@@ -197,13 +170,6 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
         int status;
         if (waitpid(pid, &status, 0) == -1) {
             return false;
-        }
-
-        // Check if the child process ended successfully
-        if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-            return true;  // Command executed successfully
-        } else {
-            return false; // Command failed
         }
     }
 
