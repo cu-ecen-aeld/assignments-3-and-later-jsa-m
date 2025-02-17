@@ -75,7 +75,7 @@ bool do_exec(int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
     /*
      * TODO:
@@ -87,7 +87,6 @@ bool do_exec(int count, ...)
      *
      */
 
-    va_end(args);
 
     pid_t pid = fork(); // Creates a child process
 
@@ -124,7 +123,10 @@ bool do_exec(int count, ...)
             return false;
         }
     }
-    return false;
+
+    va_end(args);
+
+    return true;
 }
 
 /**
@@ -145,7 +147,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
     /*
      * TODO
@@ -155,7 +157,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
      *
      */
 
-    va_end(args);
+    
 
     pid_t pid = fork();  // Create a child process
 
@@ -204,6 +206,8 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
             return false; // Command failed
         }
     }
-    return false;
+
+    va_end(args);
+    return true;
 }
 
