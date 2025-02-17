@@ -16,6 +16,9 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+   if (system(cmd)) {
+       return false;
+   }
 
     return true;
 }
@@ -47,7 +50,7 @@ bool do_exec(int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
 /*
  * TODO:
@@ -59,9 +62,31 @@ bool do_exec(int count, ...)
  *
 */
 
+    int pid = fork();
+
+    if (0 > pid) {
+        printf ("fork failed\n");
+        return false;
+    } else if (0 == pid) {
+        execv(command[0], command);
+
+        exit(EXIT_FAILURE);
+        //return false;
+    } else {
+        int status;
+
+        waitpid(pid, &status, 0);
+
+       if (status) {
+           //printf("Child process exited with status %d.\n", WEXITSTATUS(status));
+           return false;
+       }
+    }
+
     va_end(args);
 
     return true;
+
 }
 
 /**
@@ -82,7 +107,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
 
 /*
@@ -92,6 +117,29 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+
+    int fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 0644);
+    int pid = fork();
+
+    if (0 > pid) {
+        printf ("fork failed\n");
+        return false;
+    } else if (0 == pid) {
+        dup2(fd, 1);
+        close(fd);
+        execv(command[0], command);
+
+        exit(EXIT_FAILURE);
+        //return false;
+    } else {
+        int status;
+
+        waitpid(pid, &status, 0);
+
+       if (status) {
+           return false;
+       }
+   }
 
     va_end(args);
 
