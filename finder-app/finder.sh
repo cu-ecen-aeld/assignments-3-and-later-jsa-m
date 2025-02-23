@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 filesdir=$"empty"
 searchstr=$"empty"
 
 
-if [[ -z "$1" || -z "$2" ]]; then
+if [ -z "$1" ] || [ -z "$2" ]; then
     # Print an error message if the parameter is missing
     echo "Error: filesdir or searchstr are missing."
     # Exit with a return value of 1 (indicating error)
