@@ -20,7 +20,17 @@ struct thread_data{
      * if an error occurred.
      */
     bool thread_complete_success;
+
+    //To store the thread ID
+    pthread_t thread_id; 
+
+    //The mutex used to lock the thread_data struct
+    pthread_mutex_t *mutex;// Pointer to the shared mutex (not owned)
+
+    int wait_to_obtain_ms;        // Milliseconds to wait before obtaining the mutex
+    int wait_to_release_ms;       // Milliseconds to hold the mutex before releasing
 };
+
 
 
 /**
