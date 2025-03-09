@@ -25,15 +25,22 @@ void* threadfunc(void* thread_param)
     // Try to lock the mutex
     if (pthread_mutex_lock(data->mutex) != 0) {
         data->thread_complete_success = false;
-        return thread_param;
     }
 
     // Hold the mutex for the specified time
     usleep(data->wait_to_release_ms * 1000);
 
      // Unlock the mutex
-    pthread_mutex_unlock(data->mutex);
-    data->thread_complete_success = true;
+    data->retval = pthread_mutex_unlock(data->mutex);
+
+    if(data->retval == 0)
+    {
+        data->thread_complete_success = true;
+    }
+    else
+    {
+        data->thread_complete_success = false;
+    }
 
     return thread_param;
 }
@@ -54,10 +61,6 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 
     // Allocate memory for thread_data
     struct thread_data *data = (struct thread_data*) malloc(sizeof(struct thread_data));
-
-    if (!data) {
-        return success;
-    }
 
      // Initialize thread_data
     data->mutex = mutex;
@@ -86,7 +89,6 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
     */
 
     if (result != 0) {
-        ERROR_LOG("pthread_create failed with error %d", result);
         free(data); // Free allocated memory on failure
         return success;
     }

@@ -29,6 +29,8 @@ struct thread_data{
 
     int wait_to_obtain_ms;        // Milliseconds to wait before obtaining the mutex
     int wait_to_release_ms;       // Milliseconds to hold the mutex before releasing
+
+    int retval;
 };
 
 
